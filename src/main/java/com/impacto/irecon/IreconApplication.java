@@ -16,7 +16,14 @@ public class IreconApplication implements ApplicationListener<ContextRefreshedEv
 	private Environment environment;
 
 	public static void main(String[] args) {
-		SpringApplication.run(IreconApplication.class, args);
+		String port = System.getenv("PORT");
+		if (port == null) {
+			port = "8080";
+		}
+		log.info("Setting server port to: {}", port);
+		System.setProperty("server.port", port);
+		SpringApplication app = new SpringApplication(IreconApplication.class);
+		app.run(args);
 	}
 
 	@Override
@@ -26,6 +33,8 @@ public class IreconApplication implements ApplicationListener<ContextRefreshedEv
 		log.info("Application started with profile: {} on port: {}", profile, port);
 		log.info("Active profiles: {}", String.join(", ", environment.getActiveProfiles()));
 		log.info("Server address: {}", environment.getProperty("server.address"));
+		log.info("Environment PORT: {}", System.getenv("PORT"));
+		log.info("Environment Variables: {}", System.getenv());
 	}
 
 }
