@@ -1,5 +1,8 @@
 package com.impacto.irecon.command.rulemaintenance.model;
 
+import com.impacto.irecon.common.enums.RuleConstants.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -8,36 +11,38 @@ import lombok.*;
 @Builder
 public class RuleMaintenanceRequest {
 
+    @NotBlank(message = "Rule name cannot be blank")
+    @Size(min = 3, max = 50, message = "Rule name must be between 3 and 50 characters")
     private String ruleName;
+
+    @Size(max = 255, message = "Description cannot exceed 255 characters")
     private String description;
 
+    @NotNull(message = "Reconciliation type must be specified")
+    private ReconType reconType;
 
-    private String reconType;
-    private String transactionType;
+    @NotNull(message = "Transaction type must be specified")
+    private TransactionType transactionType;
 
-    private String matchType;
-    private String valueDateType;
-    private String matchAmountType;
-    private String amountType;
+    @NotNull(message = "Match type must be specified")
+    private MatchType matchType;
 
-    // Automatic tolerance
-    private String autoCurrency;
-    private Double autoPositiveTolerancePercent;
-    private Double autoNegativeTolerancePercent;
-    private Double autoPositiveToleranceAmount;
-    private Double autoNegativeToleranceAmount;
-    private Integer autoValueDatePlus;
-    private Integer autoValueDateMinus;
+    @NotNull(message = "Value date type must be specified")
+    private ValueDate valueDateType;
 
-    // Manual tolerance
-    private String manualCurrency;
-    private Double manualPositiveTolerancePercent;
-    private Double manualNegativeTolerancePercent;
-    private Double manualPositiveToleranceAmount;
-    private Double manualNegativeToleranceAmount;
-    private Integer manualValueDatePlus;
-    private Integer manualValueDateMinus;
+    @NotNull(message = "Match amount type must be specified")
+    private Match matchAmountType;
+
+    @NotNull(message = "Amount type must be specified")
+    private Amount amountType;
+
+
+    private AmountToleranceSettingsRequest automaticToleranceSettings;
+
+    private AmountToleranceSettingsRequest manualToleranceSettings;
 
     // Reference number matching
-    private ReferenceNumberMatchRequest referenceNumberMatchRequest;
+    @Valid
+    @NotNull
+    private ReferenceNumberMatchRequest referenceNumberMatch;
 }

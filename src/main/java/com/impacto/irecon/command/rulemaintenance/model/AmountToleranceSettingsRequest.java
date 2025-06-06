@@ -2,8 +2,10 @@ package com.impacto.irecon.command.rulemaintenance.model;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import lombok.Data;
 
-public class AmountToleranceSettings {
+@Data
+public class AmountToleranceSettingsRequest {
 
     private String currency;
 

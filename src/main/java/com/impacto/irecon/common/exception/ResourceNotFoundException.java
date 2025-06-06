@@ -1,11 +1,21 @@
 package com.impacto.irecon.common.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.impacto.irecon.common.enums.HttpResponseCode;
+import lombok.Getter;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@Getter
 public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String message) {
-        super(message);
-    }
-} 
+
+  private final HttpResponseCode errorCode;
+
+  public ResourceNotFoundException(String message) {
+    super(message);
+    this.errorCode = HttpResponseCode.NOT_FOUND;
+  }
+
+  public ResourceNotFoundException(HttpResponseCode errorCode, String message) {
+    super(message);
+    this.errorCode = errorCode;
+  }
+
+}

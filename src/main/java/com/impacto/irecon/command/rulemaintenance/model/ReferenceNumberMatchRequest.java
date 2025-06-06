@@ -2,11 +2,13 @@ package com.impacto.irecon.command.rulemaintenance.model;
 
 
 import com.impacto.irecon.common.enums.RuleConstants.ReferenceNumberMatch;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.AssertTrue;
+import lombok.Data;
 
+@Data
 public class ReferenceNumberMatchRequest {
 
     @NotNull(message = "Match type must be provided")

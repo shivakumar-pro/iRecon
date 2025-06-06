@@ -1,10 +1,10 @@
 package com.impacto.irecon.command.rulemaintenance.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.impacto.irecon.common.enums.RuleConstants.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,118 +18,81 @@ import java.util.UUID;
 public class RuleMaintenance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "rule_id", updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "rule_name", nullable = false)
+    @Column(name = "rule_id", nullable = false, unique = true, length = 100)
+    private String ruleId;
+
+    @Column(name = "rule_name", nullable = false, unique = true, length = 50)
     private String ruleName;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 255)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "recon_type", nullable = false)
-    private String reconType;
+    private ReconType reconType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
-    private String transactionType;
+    private TransactionType transactionType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "match_type", nullable = false)
-    private String matchType;
+    private MatchType matchType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "value_date_type", nullable = false)
-    private String valueDateType;
+    private ValueDate valueDateType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "match_amount_type", nullable = false)
-    private String matchAmountType;
+    private Match matchAmountType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "amount_type", nullable = false)
-    private String amountType;
+    private Amount amountType;
 
-    // Automatic tolerance details
-    @Column(name = "auto_currency")
-    private String autoCurrency;
+    @JsonManagedReference(value = "automatic-tolerance")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "automatic_tolerance_id")
+    private AmountToleranceSettings automaticToleranceSettings;
 
-    @Column(name = "auto_positive_tolerance_percent")
-    private Double autoPositiveTolerancePercent;
+    @JsonManagedReference(value = "manual-tolerance")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "manual_tolerance_id")
+    private AmountToleranceSettings manualToleranceSettings;
 
-    @Column(name = "auto_negative_tolerance_percent")
-    private Double autoNegativeTolerancePercent;
+    @JsonManagedReference(value = "reference-number-match")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "reference_number_match_id")
+    private ReferenceNumberMatchEntity referenceNumberMatch;
 
-    @Column(name = "auto_positive_tolerance_amount")
-    private Double autoPositiveToleranceAmount;
-
-    @Column(name = "auto_negative_tolerance_amount")
-    private Double autoNegativeToleranceAmount;
-
-    @Column(name = "auto_value_date_plus")
-    private Integer autoValueDatePlus;
-
-    @Column(name = "auto_value_date_minus")
-    private Integer autoValueDateMinus;
-
-    // Manual tolerance details
-    @Column(name = "manual_currency")
-    private String manualCurrency;
-
-    @Column(name = "manual_positive_tolerance_percent")
-    private Double manualPositiveTolerancePercent;
-
-    @Column(name = "manual_negative_tolerance_percent")
-    private Double manualNegativeTolerancePercent;
-
-    @Column(name = "manual_positive_tolerance_amount")
-    private Double manualPositiveToleranceAmount;
-
-    @Column(name = "manual_negative_tolerance_amount")
-    private Double manualNegativeToleranceAmount;
-
-    @Column(name = "manual_value_date_plus")
-    private Integer manualValueDatePlus;
-
-    @Column(name = "manual_value_date_minus")
-    private Integer manualValueDateMinus;
-
-    // Reference number details
-    @Column(name = "reference_number_match_type")
-    private String referenceNumberMatchType;
-
-    @Column(name = "identical_internal")
-    private Boolean identicalInternal;
-
-    @Column(name = "identical_external")
-    private Boolean identicalExternal;
-
-    @Column(name = "reference_start_position")
-    private Integer referenceStartPosition;
-
-    @Column(name = "reference_length")
-    private Integer referenceLength;
-
-    @Column(name = "report_match_as_exception")
-    private Boolean reportMatchAsException;
-
-    // Audit fields
-    @Column(name = "created_by")
+    @Column(name = "created_by", length = 100)
     private String createdBy;
 
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 
-    @Column(name = "last_modified_by")
+    @Column(name = "last_modified_by", length = 100)
     private String lastModifiedBy;
 
     @Column(name = "last_modified_on")
     private LocalDateTime lastModifiedOn;
 
     @PrePersist
-    public void onCreate() {
+    protected void onCreate() {
+        if (ruleId == null) {
+            ruleId = UUID.randomUUID().toString();
+        }
         createdOn = LocalDateTime.now();
         lastModifiedOn = LocalDateTime.now();
     }
 
     @PreUpdate
-    public void onUpdate() {
+    protected void onUpdate() {
         lastModifiedOn = LocalDateTime.now();
     }
 }
+

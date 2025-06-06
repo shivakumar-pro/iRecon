@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ValidationErrorResponse {
+public class ValidationGenericErrorResponse {
     private LocalDateTime timestamp;
     private int status;
     private String error;
